@@ -60,15 +60,15 @@ const plugins = [
 			NODE_ENV: JSON.stringify(process.env.NODE_ENV),
 		}
 	}),
-	new webpack.optimize.CommonsChunkPlugin({
-		names: ['app', 'vendor', 'manifest'],
-		minChunks: Infinity,
-	}),
-	new webpack.optimize.CommonsChunkPlugin({
-		children: true,
-		async: 'common',
-		minChunks: 2
-	}),
+	// new webpack.optimize.CommonsChunkPlugin({
+	// 	names: ['app', 'vendor', 'manifest'],
+	// 	minChunks: Infinity,
+	// }),
+	// new webpack.optimize.CommonsChunkPlugin({
+	// 	children: true,
+	// 	async: 'common',
+	// 	minChunks: 2
+	// }),
 	new HtmlWebpackPlugin({
 		template: 'app/react/layouts/desktop.ejs',
 		filename: 'desktop.html',
@@ -120,25 +120,6 @@ if(productionEnv){
             },
         })
     );
-	plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                screw_ie8: true,
-                conditionals: true,
-                unused: true,
-                comparisons: true,
-                sequences: true,
-                dead_code: true,
-                evaluate: true,
-                if_return: true,
-                join_vars: true
-            },
-            output: {
-                comments: false
-            }
-        })
-	)
 } else {
 	plugins.push(
 		//new BundleAnalyzerPlugin()
