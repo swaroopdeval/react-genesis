@@ -37,6 +37,7 @@ app.use((req, res) => {
 	const asyncContext = createAsyncContext()				//React Async Component
 
 	//Create React App
+	console.log('jaha ' + new Date())
 	const reactAppJSX = (
 			<Provider store={ reduxStore }>
 				<AsyncComponentProvider asyncContext={asyncContext}>
@@ -48,7 +49,7 @@ app.use((req, res) => {
 				</AsyncComponentProvider>
 			</Provider>
 		)
-
+		console.log('after react ' + new Date())
 	// 
 	/**
 	 * This makes sure we "bootstrap" resolve any async components prior to rendering
@@ -60,10 +61,10 @@ app.use((req, res) => {
 	 * 
 	 * @param  {React Object} reactAppJSX
 	 */
-	asyncBootstrapper(reactAppJSX).then(() => {
+	//asyncBootstrapper(reactAppJSX).then(() => {
 		// We can now render our app
 		const reactApp = ReactDOMServer.renderToString(reactAppJSX);
-		
+		console.log('yaha ' + new Date())
 		//Get asunc components' context and put it in DOM so that client side stay sync with server
 		const asyncState = asyncContext.getState();
 		const reduxState = JSON.stringify(reduxStore.getState());	//Get redux state
@@ -78,7 +79,7 @@ app.use((req, res) => {
 	        const document = file.replace('<div id="root"></div>', `<div id="root">${reactApp}</div>${footerScript}`);
 	        res.status(200).send(document)
 	    })
-	})
+	//})
 })
 
 /*

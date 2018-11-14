@@ -5,20 +5,51 @@ import { withCookies, Cookies } from 'react-cookie'
 import { instanceOf } from 'prop-types';
 
 class SSR extends Component {
-    asyncBootstrap(){
-        if(this.props.ssr){
-            //Get action from action creator
-            if(typeof this.props.route.prefetch === 'undefined') {return true}
-            const prefetchAction  = this.props.route.prefetch()
-            const dispatch  = this.props.dispatch
-            return dispatch(prefetchAction).then(() => {return true}).catch((err) => {console.log(err); return false;})
-        } else {
-            return true
-        }
+    constructor(props) {
+        super(props);
+        this.getData = this.getData.bind(this)
+        console.log('here ' + new Date())
+        this.getData();
     }
 
+    async getData() {
+        console.log('there ' + new Date())
+        
+        //No need for ssr
+        if (!this.props.ssr) return true;
+
+        //No acrtion to dispatch
+        if(typeof this.props.route.prefetch === 'undefined') return true
+
+        //Get action from action creator and dispatch them.
+        const prefetchAction  = this.props.route.prefetch()
+        const dispatch  = this.props.dispatch
+        try {
+            await dispatch(prefetchAction);
+            console.log('india')
+        } catch(e) {
+            console.log(err);
+            console.log('zomato')
+        }
+
+        console.log('also here ' + new Date())
+    }
+
+    // asyncBootstrap(){
+    //     if (this.props.ssr) {
+    //         //Get action from action creator
+    //         if(typeof this.props.route.prefetch === 'undefined') {return true}
+    //         const prefetchAction  = this.props.route.prefetch()
+    //         const dispatch  = this.props.dispatch
+    //         return dispatch(prefetchAction).then(() => {return true}).catch((err) => {console.log(err); return false;})
+    //     } else {
+    //         return true
+    //     }
+    // }
+
     render(){
-        let Component = this.props.route.component;
+        console.log('render ' + new Date())
+        const Component = this.props.route.component;
         return <Component  {...this.props} {...this.state}/>
     }
 }
