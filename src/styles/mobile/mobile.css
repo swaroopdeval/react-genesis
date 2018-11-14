@@ -1,0 +1,40 @@
+$base-width: 100%;
+$block: block;
+$black: #000;
+$white: #fff;
+$uppercase: uppercase;
+
+
+body{
+	background: #eee;
+}
+
+@define-extend testcase{
+		width: $base-width;
+		display: $block;
+		background: $black;
+}
+
+@define-extend text-center{
+	text-align: center;
+}
+
+@define-mixin mixintest{
+		font-size: 1.2em;
+		text-transform: $uppercase;
+		text-decoration: none;
+}
+.test{
+	@extend testcase;
+	@extend text-center;
+	& a{
+		@mixin mixintest;
+		color: $white;
+		z-index: 999999;
+	}
+}
+
+.test-extend-mixin{
+	@mixin mixintest;
+	@extend testcase;
+}
