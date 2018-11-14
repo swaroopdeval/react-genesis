@@ -1,5 +1,4 @@
 import * as reducers from "./ducks";
-import thunkMiddleware from "redux-thunk";
 import middlewares from "./middlewares";
 import { createStore, applyMiddleware, combineReducers } from "redux";
 //import { apiService } from "./middlewares";

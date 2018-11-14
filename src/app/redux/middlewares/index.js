@@ -1,5 +1,6 @@
 import apiService from "./apiService"
+import thunkMiddleware from "redux-thunk";
 
-let middleware = [apiService]
+let middleware = [thunkMiddleware, apiService]
 
 export default middleware

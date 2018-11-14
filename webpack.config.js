@@ -4,17 +4,17 @@ const packageFile = require( "./package.json" );
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CssInlinePlugin = require('./css-inline-plugin');
+// require("@babel/polyfill");
 
 const vendor = Object.keys(packageFile.dependencies);
 
 /*@todo remove this*/
 const productionEnv = process.env.NODE_ENV === "production";
-const timestamp = Date.now();
-const mainFilename = productionEnv ? `[name].js?${timestamp}`: '[name].js';
-const chunkFilename = productionEnv ? `[name].chunk.js?${timestamp}` : '[name].chunk.js';
+const mainFilename = productionEnv ? `[name].js?`: '[name].js';
+const chunkFilename = productionEnv ? `[name].chunk.js?` : '[name].chunk.js';
 
 const BUILD_DIR = path.resolve( __dirname, "public" );
 const APP_DIR = path.resolve(__dirname, 'src');
@@ -90,9 +90,9 @@ const plugins = [
         alwaysWriteToDisk: true,
         minify: htmlMinify
 	}),
-	new ExtractTextPlugin( {
-        filename: '[name].css',
-        allChunks: true,
+	new MiniCssExtractPlugin({
+        filename: productionEnv ? '[name].[hash].css': '[name].css',
+        chunkFilename: productionEnv ? '[id].[hash].css': '[id].css',
     }),
     new CssInlinePlugin({
         files: [
@@ -149,7 +149,7 @@ var webpackConfig = {
 	context: APP_DIR,
 
 	entry: {
-		app: "./client/index.js",
+		app: ["@babel/polyfill", "./client/index.js"],
 		vendor: vendor,
 		mobile: "./styles/mobile/mobile.css",
         desktop: "./styles/desktop/desktop.css",
@@ -169,27 +169,25 @@ var webpackConfig = {
 				exclude: /node_modules/
 			},
 			{
-				test: /\.css$/,
-				use: ExtractTextPlugin.extract({
-					fallback: 'style-loader',
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            query: {
-                                sourceMap: false,
-                                importLoaders: 2
-                            }
-                        },
-                        {
-                            loader: 'postcss-loader',
-                            query: {
-                                sourceMap: false,
-                                parser: require('postcss-scss'),
-                                plugins: cssPlugins
-                            }
-                        },
-                    ]
-				})
+                test: /\.css$/,
+                use: [
+                    productionEnv ? MiniCssExtractPlugin.loader : 'style-loader',
+                    {
+                        loader: 'css-loader',
+                        query: {
+                            sourceMap: false,
+                            importLoaders: 2
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        query: {
+                            sourceMap: false,
+                            parser: require('postcss-scss'),
+                            plugins: cssPlugins
+                        }
+                    }
+                ]
 			},
 			{
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
